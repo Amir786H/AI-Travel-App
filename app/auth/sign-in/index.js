@@ -2,6 +2,7 @@ import { View, Text, TextInput, StyleSheet, Pressable } from "react-native";
 import React, { useEffect } from "react";
 import { useNavigation, useRouter } from "expo-router";
 import { Colors } from "@/constants/Colors";
+import { Ionicons } from '@expo/vector-icons';
 
 export default function Login() {
   const navigation = useNavigation();
@@ -17,11 +18,12 @@ export default function Login() {
     <View
       style={{
         padding: 25,
-        paddingTop: 60,
+        paddingTop: 40,
         height: "100%",
         backgroundColor: Colors.WHITE,
       }}
     >
+      <Ionicons name="arrow-back" size={24} color="black" onPress={() => router.back()}/>
       <Text style={{ fontFamily: "outfit-bold", fontSize: 26 }}>
         Let's Sign You In
       </Text>
@@ -30,7 +32,7 @@ export default function Login() {
           fontFamily: "outfit",
           fontSize: 24,
           color: Colors.GRAY,
-          marginTop: 15,
+          marginTop: 25,
         }}
       >
         Welcome Back
