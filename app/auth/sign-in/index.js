@@ -1,18 +1,44 @@
-import { View, Text, TextInput, StyleSheet, Pressable } from "react-native";
+import { View, Text, TextInput, StyleSheet, Pressable, ToastAndroid } from "react-native";
 import React, { useEffect } from "react";
 import { useNavigation, useRouter } from "expo-router";
 import { Colors } from "@/constants/Colors";
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons } from "@expo/vector-icons";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../../../configs/FirebaseConfig";
 
 export default function Login() {
   const navigation = useNavigation();
   const router = useRouter();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   useEffect(() => {
     navigation.setOptions({
       headerShown: false,
     });
   }, []);
+
+  const OnSignIn = () => {
+    if (!email && !password) {
+      ToastAndroid.show("Please enter email & password", ToastAndroid.SHORT);
+      return; 
+    }
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        // Signed in
+        const user = userCredential.user;
+        // ...
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(errorCode, errorMessage);
+        if(errorCode === "auth/user-not-found"){
+          ToastAndroid.show("User not found", ToastAndroid.SHORT); 
+        }
+      });
+  };
 
   return (
     <View
@@ -23,7 +49,12 @@ export default function Login() {
         backgroundColor: Colors.WHITE,
       }}
     >
-      <Ionicons name="arrow-back" size={24} color="black" onPress={() => router.back()}/>
+      <Ionicons
+        name="arrow-back"
+        size={24}
+        color="black"
+        onPress={() => router.back()}
+      />
       <Text style={{ fontFamily: "outfit-bold", fontSize: 26 }}>
         Let's Sign You In
       </Text>
@@ -51,7 +82,7 @@ export default function Login() {
       {/* Email */}
       <View style={{ marginTop: 30 }}>
         <Text style={{ fontFamily: "outfit" }}>Email</Text>
-        <TextInput style={styles.input} placeholder="Enter your email" />
+        <TextInput onChangeText={(value) => setEmail(value)} style={styles.input} placeholder="Enter your email" />
       </View>
       {/* Password */}
       <View style={{ marginTop: 20 }}>
@@ -59,25 +90,28 @@ export default function Login() {
         <TextInput
           style={styles.input}
           secureTextEntry={true}
+          onChangeText={(value) => setPassword(value)}
           placeholder="Enter your password"
         />
       </View>
 
       {/* Sign-In button */}
-      <View
-        style={{
-          padding: 18,
-          backgroundColor: Colors.PRIMARY,
-          borderRadius: 15,
-          marginTop: 40,
-        }}
-      >
-        <Text style={{ color: Colors.WHITE, textAlign: "center" }}>
-          Sign In
-        </Text>
-      </View>
+      <Pressable onPress={OnSignIn}>
+        <View
+          style={{
+            padding: 18,
+            backgroundColor: Colors.PRIMARY,
+            borderRadius: 15,
+            marginTop: 40,
+          }}
+        >
+          <Text style={{ color: Colors.WHITE, textAlign: "center" }}>
+            Sign In
+          </Text>
+        </View>
+      </Pressable>
       {/* Create Account Button */}
-      <Pressable onPress={()=> router.replace('/auth/sign-up')}>
+      <Pressable onPress={() => router.replace("/auth/sign-up")}>
         <View
           style={{
             padding: 18,
