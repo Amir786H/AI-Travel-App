@@ -1,5 +1,5 @@
 import { View, Text, TextInput, StyleSheet, Pressable, ToastAndroid } from "react-native";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigation, useRouter } from "expo-router";
 import { Colors } from "@/constants/Colors";
 import { Ionicons } from "@expo/vector-icons";
@@ -28,13 +28,15 @@ export default function Login() {
       .then((userCredential) => {
         // Signed in
         const user = userCredential.user;
+        router.replace('/mytrip');
+        console.log(user);
         // ...
       })
       .catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;
         console.log(errorCode, errorMessage);
-        if(errorCode === "auth/user-not-found"){
+        if(errorCode === "auth/invalid-credential"){
           ToastAndroid.show("User not found", ToastAndroid.SHORT); 
         }
       });
