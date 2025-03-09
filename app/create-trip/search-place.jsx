@@ -3,7 +3,7 @@ import React, { useContext, useEffect } from 'react'
 import { useNavigation } from 'expo-router'
 import { Colors } from '../../constants/Colors';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
-import { CreateTripContext } from '../../contexts/CreateTripContext';
+import { CreateTripContext } from '../../context/CreateTripContext';
 
 export default function SearchPlace() {
     const navigation = useNavigation();
@@ -29,10 +29,14 @@ export default function SearchPlace() {
       fetchDetails={true}
       onPress={(data, details = null) => {
         // 'details' is provided when fetchDetails = true
-        // console.log(data, details);
+        console.log(data, details);
+        // console.log(data.description);
         setTripData({
           locationInfo: {
             name: data.description,
+            coordinates: details?.geometry.location,
+            photoRef: details?.photos?.[0]?.photo_reference,
+            url: details?.url 
           }
         })
       }}
